@@ -259,5 +259,6 @@ if using (authn-webhook)[https://github.com/itewk/authn-webhook] example then th
 ```sh
 2026/04/17 04:57:59 INFO Review Response authenticated=true user="&{Username:test-06 UID: Groups:[] Extra:map[]}" error=""
 ```
+
 ## Troubleshooting
 Here there be dragons.

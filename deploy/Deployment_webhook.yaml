@@ -32,7 +32,21 @@ spec:
                       path: external.kubeconfig
             defaultMode: 420
       containers:
-        - resources: {}
+        - name: webhook
+          image: 'image-registry.openshift-image-registry.svc:5000/multiplexer-proxy-webhook/multiplexer-proxy-webhook:latest'
+          imagePullPolicy: Always
+          args:
+            - '-command'
+            - serve
+            - '-tls-cert'
+            - /etc/tls/tls.crt
+            - '-tls-key'
+            - /etc/tls/tls.key
+            - '-openshift-webhook-kubeconfig'
+            - /etc/webhook/kubeconfigs/openshift.kubeconfig
+            - '-external-webhook-kubeconfig'
+            - /etc/webhook/kubeconfigs/external.kubeconfig
+          resources: {}
           readinessProbe:
             httpGet:
               path: /healthz
@@ -43,7 +57,6 @@ spec:
             successThreshold: 1
             failureThreshold: 3
           terminationMessagePath: /dev/termination-log
-          name: webhook
           livenessProbe:
             httpGet:
               path: /healthz
@@ -60,7 +73,6 @@ spec:
             - name: https
               containerPort: 8443
               protocol: TCP
-          imagePullPolicy: Always
           volumeMounts:
             - name: tls
               readOnly: true
@@ -69,18 +81,7 @@ spec:
               readOnly: true
               mountPath: /etc/webhook/kubeconfigs
           terminationMessagePolicy: File
-          image: 'image-registry.openshift-image-registry.svc:5000/multiplexer-proxy-webhook/multiplexer-proxy-webhook:latest'
-          args:
-            - '-command'
-            - serve
-            - '-tls-cert'
-            - /etc/tls/tls.crt
-            - '-tls-key'
-            - /etc/tls/tls.key
-            - '-openshift-webhook-kubeconfig'
-            - /etc/webhook/kubeconfigs/openshift.kubeconfig
-            - '-external-webhook-kubeconfig'
-            - /etc/webhook/kubeconfigs/external.kubeconfig
+
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
