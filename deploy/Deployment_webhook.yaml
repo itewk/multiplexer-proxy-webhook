@@ -1,0 +1,95 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook
+  template:
+    metadata:
+      labels:
+        app: webhook
+    spec:
+      volumes:
+        - name: tls
+          secret:
+            secretName: webhook-route-tls
+            defaultMode: 420
+        - name: kubeconfigs
+          projected:
+            sources:
+              - secret:
+                  name: openshift-oauth-webhook-kubeconfig
+                  items:
+                    - key: kubeConfig
+                      path: openshift.kubeconfig
+              - secret:
+                  name: authn-webhook-kubeconfig
+                  items:
+                    - key: kubeConfig
+                      path: external.kubeconfig
+            defaultMode: 420
+      containers:
+        - resources: {}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: webhook
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+          ports:
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: tls
+              readOnly: true
+              mountPath: /etc/tls
+            - name: kubeconfigs
+              readOnly: true
+              mountPath: /etc/webhook/kubeconfigs
+          terminationMessagePolicy: File
+          image: 'image-registry.openshift-image-registry.svc:5000/multiplexer-proxy-webhook/multiplexer-proxy-webhook:1.0-Beta.9'
+          args:
+            - '-command'
+            - serve
+            - '-tls-cert'
+            - /etc/tls/tls.crt
+            - '-tls-key'
+            - /etc/tls/tls.key
+            - '-openshift-webhook-kubeconfig'
+            - /etc/webhook/kubeconfigs/openshift.kubeconfig
+            - '-external-webhook-kubeconfig'
+            - /etc/webhook/kubeconfigs/external.kubeconfig
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

@@ -1,0 +1,11 @@
+kind: Kustomization
+
+namespace: multiplexer-proxy-webhook
+
+resources:
+- Namespace.yaml
+- Service_webhook.yaml
+- ConfigMap_webhook-cabundle.yaml
+- Deployment_webhook.yaml
+- Certificate_webhook-route.yaml
+- Route_webhook.yaml
