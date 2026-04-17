@@ -9,3 +9,14 @@ resources:
 - Deployment_webhook.yaml
 - Certificate_webhook-route.yaml
 - Route_webhook.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+- name: authn-webhook-kubeconfig
+  files:
+  - kubeConfig=files/authn-webhook.kubeconfig
+- name: openshift-oauth-webhook-kubeconfig
+  files:
+  - kubeConfig=files/openshift-oauth-webhook.kubeconfig

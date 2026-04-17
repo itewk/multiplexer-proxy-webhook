@@ -60,7 +60,7 @@ spec:
             - name: https
               containerPort: 8443
               protocol: TCP
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           volumeMounts:
             - name: tls
               readOnly: true
@@ -69,7 +69,7 @@ spec:
               readOnly: true
               mountPath: /etc/webhook/kubeconfigs
           terminationMessagePolicy: File
-          image: 'image-registry.openshift-image-registry.svc:5000/multiplexer-proxy-webhook/multiplexer-proxy-webhook:1.0-Beta.9'
+          image: 'image-registry.openshift-image-registry.svc:5000/multiplexer-proxy-webhook/multiplexer-proxy-webhook:latest'
           args:
             - '-command'
             - serve

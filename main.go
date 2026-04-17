@@ -1,6 +1,6 @@
+// Author: 👨‍💻 itewk@redhat.com
+// Author: 🤖 gemini.google.com
 package main
-
-// NOTE: vibe coded by itewk@redhat.com with gemini.google.com
 
 import (
 	"bytes"
