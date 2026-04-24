@@ -139,20 +139,20 @@ export MULTIPLEXER_PROXY_WEBHOOK=$(oc get route webhook -n multiplexer-proxy-web
 curl -X POST https://${MULTIPLEXER_PROXY_WEBHOOK} \
   -k \
   -H "Content-Type: application/json" \
-  -d '{
-    "kind": "TokenReview",
-    "apiVersion": "authentication.k8s.io/v1",
-    "metadata": {},
-    "spec": {
-        "token": "${OCP_OAUTH_TOKEN}",
-        "audiences": [
-            "https://kubernetes.default.svc"
+  -d "{
+    \"kind\": \"TokenReview\",
+    \"apiVersion\": \"authentication.k8s.io/v1\",
+    \"metadata\": {},
+    \"spec\": {
+        \"token\": \"${OCP_OAUTH_TOKEN}\",
+        \"audiences\": [
+            \"https://kubernetes.default.svc\"
         ]
     },
-    "status": {
-        "user": {}
+    \"status\": {
+        \"user\": {}
     }
-}'
+}"
 ```
 
 expected output
@@ -215,20 +215,20 @@ export MULTIPLEXER_PROXY_WEBHOOK=$(oc get route webhook -n multiplexer-proxy-web
 curl -X POST https://${MULTIPLEXER_PROXY_WEBHOOK} \
   -k \
   -H "Content-Type: application/json" \
-  -d '{
-    "kind": "TokenReview",
-    "apiVersion": "authentication.k8s.io/v1",
-    "metadata": {},
-    "spec": {
-        "token": "${JWT_WEBHOOK_TOKEN}",
-        "audiences": [
-            "https://kubernetes.default.svc"
+  -d "{
+    \"kind\": \"TokenReview\",
+    \"apiVersion\": \"authentication.k8s.io/v1\",
+    \"metadata\": {},
+    \"spec\": {
+        \"token\": \"${JWT_WEBHOOK_TOKEN}\",
+        \"audiences\": [
+            \"https://kubernetes.default.svc\"
         ]
     },
-    "status": {
-        "user": {}
+    \"status\": {
+        \"user\": {}
     }
-}'
+}"
 ```
 
 expected output
